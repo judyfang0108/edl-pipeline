@@ -1,0 +1,35 @@
+{
+  "name": "mysql-cdc-source",
+  "config": {
+    "connector.class": "io.debezium.connector.mysql.MySqlConnector",
+    "database.hostname": "mysql",
+    "database.port": "3306",
+    "database.user": "debezium",
+    "database.password": "dbz_pass",
+    "database.server.id": "184054",
+    "topic.prefix": "cdc",
+    "database.include.list": "source_db",
+    "table.include.list": "source_db.orders,source_db.products,source_db.regions,source_db.payment_methods,source_db.promotions",
+
+    "schema.history.internal.kafka.bootstrap.servers": "kafka:29092",
+    "schema.history.internal.kafka.topic": "_schema_history",
+    "include.schema.changes": "false",
+
+    "snapshot.mode": "initial",
+
+    "key.converter": "org.apache.kafka.connect.json.JsonConverter",
+    "key.converter.schemas.enable": "false",
+    "value.converter": "org.apache.kafka.connect.json.JsonConverter",
+    "value.converter.schemas.enable": "false",
+
+    "transforms": "unwrap",
+    "transforms.unwrap.type": "io.debezium.transforms.ExtractNewRecordState",
+    "transforms.unwrap.add.fields": "op,source.ts_ms",
+    "transforms.unwrap.delete.handling.mode": "rewrite",
+    "transforms.unwrap.drop.tombstones": "true",
+
+    "heartbeat.interval.ms": "5000",
+    "poll.interval.ms": "100",
+    "max.batch.size": "1024"
+  }
+}

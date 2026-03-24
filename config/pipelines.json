@@ -1,0 +1,92 @@
+{
+  "pipelines": [
+    {
+      "name": "orders_to_order_summary",
+      "destination": {
+        "database": "dest_db",
+        "table": "order_summary"
+      },
+      "fact": {
+        "mysql_table": "orders",
+        "columns": {
+          "id":     "order_id",
+          "amount": "amount",
+          "status": "status"
+        }
+      },
+      "dimensions": [
+        {
+          "mysql_table": "products",
+          "fk_in_fact":  "product_id",
+          "pk":          "id",
+          "columns": {
+            "id":       "product_id",
+            "name":     "product_name",
+            "metadata": "product_metadata"
+          }
+        },
+        {
+          "mysql_table": "regions",
+          "fk_in_fact":  "region_id",
+          "pk":          "id",
+          "columns": {
+            "id":       "region_id",
+            "region":   "region",
+            "currency": "currency"
+          }
+        }
+      ]
+    },
+    {
+      "name": "orders_to_order_details",
+      "destination": {
+        "database": "dest_db",
+        "table": "order_details"
+      },
+      "fact": {
+        "mysql_table": "orders",
+        "columns": {
+          "id":                "order_id",
+          "amount":            "amount",
+          "status":            "status",
+          "payment_method_id": "payment_method_id",
+          "promotion_id":      "promotion_id"
+        }
+      },
+      "dimensions": [
+        {
+          "mysql_table": "products",
+          "fk_in_fact":  "product_id",
+          "pk":          "id",
+          "columns": {
+            "id":       "product_id",
+            "name":     "product_name",
+            "metadata": "product_metadata"
+          }
+        },
+        {
+          "mysql_table": "payment_methods",
+          "fk_in_fact":  "payment_method_id",
+          "pk":          "id",
+          "nullable":    true,
+          "columns": {
+            "id":          "payment_method_id",
+            "method_name": "payment_method",
+            "provider":    "payment_provider"
+          }
+        },
+        {
+          "mysql_table": "promotions",
+          "fk_in_fact":  "promotion_id",
+          "pk":          "id",
+          "nullable":    true,
+          "columns": {
+            "id":           "promotion_id",
+            "promo_code":   "promo_code",
+            "discount_pct": "discount_pct"
+          }
+        }
+      ]
+    }
+  ]
+}
